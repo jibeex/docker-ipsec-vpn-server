@@ -1,2 +1,2 @@
 #!/bin/sh
-docker exec -it jibeex-ipsec-vpn-server /rmuser.sh "$1"
+docker exec -it jibeex-ipsec-vpn-server /opt/src/rmuser.sh "$1"
