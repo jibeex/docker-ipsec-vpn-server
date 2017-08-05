@@ -24,4 +24,4 @@ docker run \
     -v /lib/modules:/lib/modules:ro \
     -d --privileged \
     --restart=always \
-    mobilejazz/docker-ipsec-vpn-server
+    jibeex/docker-ipsec-vpn-server
