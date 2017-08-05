@@ -1,14 +1,14 @@
 FROM debian:jessie
 MAINTAINER Jordi Gimenez <info@mobilejazz.com>
 
-ENV REFRESHED_AT 2016-10-01
-ENV SWAN_VER 3.18
+ENV REFRESHED_AT 2017-03-23
+ENV SWAN_VER 3.20
 
 WORKDIR /opt/src
 
-RUN sed -i "s/httpredir\.debian\.org/ftp.us.debian.org/g" /etc/apt/sources.list \
-    && apt-get -yqq update \
-    && DEBIAN_FRONTEND=noninteractive apt-get -yqq --no-install-recommends install \
+RUN apt-get -yqq update \
+    && DEBIAN_FRONTEND=noninteractive \
+       apt-get -yqq --no-install-recommends install \
          wget dnsutils openssl ca-certificates kmod \
          iproute gawk grep sed net-tools iptables \
          bsdmainutils libunbound2 libcurl3-nss \
@@ -17,8 +17,8 @@ RUN sed -i "s/httpredir\.debian\.org/ftp.us.debian.org/g" /etc/apt/sources.list 
          libcap-ng-dev libcap-ng-utils libselinux1-dev \
          libcurl4-nss-dev libsystemd-dev flex bison gcc make \
          libunbound-dev xmlto \
-    && wget -t 3 -T 30 -nv -O "libreswan.tar.gz" "https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz" \
-    || wget -t 3 -T 30 -nv -O "libreswan.tar.gz" "https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz" \
+    && wget -t 3 -T 30 -nv -O "libreswan.tar.gz" "https://github.com/libreswan/libreswan/archive/v${SWAN_VER}.tar.gz" \
+    || wget -t 3 -T 30 -nv -O "libreswan.tar.gz" "https://download.libreswan.org/libreswan-${SWAN_VER}.tar.gz" \
     && tar xzf "libreswan.tar.gz" \
     && rm -f "libreswan.tar.gz" \
     && cd "libreswan-${SWAN_VER}" \
