@@ -8,6 +8,7 @@ WORKDIR /opt/src
 
 RUN sed -i "s/httpredir\.debian\.org/ftp.us.debian.org/g" /etc/apt/sources.list \
     && apt-get -yqq update \
+    && chkconfig ipsec on \
     && DEBIAN_FRONTEND=noninteractive apt-get -yqq --no-install-recommends install \
          wget dnsutils openssl ca-certificates kmod \
          iproute gawk grep sed net-tools iptables \
