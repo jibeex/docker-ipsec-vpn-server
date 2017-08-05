@@ -1,5 +1,5 @@
 FROM debian:jessie
-MAINTAINER Jordi Gimenez <info@mobilejazz.com>
+MAINTAINER Lin Song <linsongui@gmail.com>
 
 ENV REFRESHED_AT 2017-03-23
 ENV SWAN_VER 3.20
@@ -34,17 +34,13 @@ RUN apt-get -yqq update \
          libunbound-dev xmlto perl-modules perl \
     && apt-get -yqq autoremove \
     && apt-get -y clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm /etc/ipsec.secrets /etc/ppp/chap-secrets
+    && rm -rf /var/lib/apt/lists/*
 
-COPY ./run.sh /opt/src/run.sh	
-COPY ./adduser.sh /opt/src/adduser.sh
-COPY ./lsusers.sh /opt/src/lsusers.sh
-COPY ./rmuser.sh /opt/src/rmuser.sh
-RUN chmod 755 /opt/src/run.sh /opt/src/adduser.sh /opt/src/lsusers.sh /opt/src/rmuser.sh
+COPY ./run.sh /opt/src/run.sh
+RUN chmod 755 /opt/src/run.sh
 
 EXPOSE 500/udp 4500/udp
 
-VOLUME ["/lib/modules", "/etc/ppp/chap-secrets", "/etc/ipsec.d/passwd", "/etc/ipsec.secrets"]
+VOLUME ["/lib/modules"]
 
 CMD ["/opt/src/run.sh"]
