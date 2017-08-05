@@ -37,14 +37,14 @@ RUN apt-get -yqq update \
     && rm -rf /var/lib/apt/lists/* \
     && rm /etc/ipsec.secrets /etc/ppp/chap-secrets
 
-COPY ./run.sh /run.sh
-COPY ./adduser.sh /adduser.sh
-COPY ./lsusers.sh /lsusers.sh
-COPY ./rmuser.sh /rmuser.sh
-RUN chmod 755 /run.sh /adduser.sh /lsusers.sh /rmuser.sh
+COPY ./run.sh /opt/src/run.sh	
+COPY ./adduser.sh /opt/src/adduser.sh
+COPY ./lsusers.sh /opt/src/lsusers.sh
+COPY ./rmuser.sh /opt/src/rmuser.sh
+RUN chmod 755 /opt/src/run.sh /opt/src/adduser.sh /opt/src/lsusers.sh /opt/src/rmuser.sh
 
 EXPOSE 500/udp 4500/udp
 
 VOLUME ["/lib/modules", "/etc/ppp/chap-secrets", "/etc/ipsec.d/passwd", "/etc/ipsec.secrets"]
 
-CMD ["/run.sh"]
+CMD ["/opt/src/run.sh"]
