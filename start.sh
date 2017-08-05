@@ -13,7 +13,7 @@ if [ -f etc/pre-up.sh ]; then
 fi
 
 docker run \
-    --name ipsec-vpn-server \
+    --name jibeex-ipsec-vpn-server \
     -p 500:500/udp \
     -p 4500:4500/udp \
     -v /lib/modules:/lib/modules:ro \

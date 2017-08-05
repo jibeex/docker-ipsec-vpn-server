@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker exec -it ipsec-vpn-server ipsec status
+docker exec -it jibeex-ipsec-vpn-server ipsec status
