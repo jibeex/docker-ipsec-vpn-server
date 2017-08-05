@@ -24,12 +24,12 @@ nospaces() { printf %s "$1" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//';
 noquotes() { printf %s "$1" | sed -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'$/\1/"; }
 
 check_ip() {
-IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
-printf %s "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
+  IP_REGEX="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"
+  printf %s "$1" | tr -d '\n' | grep -Eq "$IP_REGEX"
 }
 
 if [ ! -f "/.dockerenv" ]; then
-exiterr "This script ONLY runs in a Docker container."
+  exiterr "This script ONLY runs in a Docker container."
 fi
 
 if ip link add dummy0 type dummy 2>&1 | grep -q "not permitted"; then
@@ -40,29 +40,29 @@ For detailed instructions, please visit:
 https://github.com/hwdsl2/docker-ipsec-vpn-server
 
 EOF
-exit 1
+  exit 1
 fi
 ip link delete dummy0 >/dev/null 2>&1
 
 mkdir -p /opt/src
 vpn_env="/opt/src/vpn-gen.env"
 if [ -z "$VPN_IPSEC_PSK" ] && [ -z "$VPN_USER" ] && [ -z "$VPN_PASSWORD" ]; then
-if [ -f "$vpn_env" ]; then
-echo
-echo "Retrieving previously generated VPN credentials..."
-. "$vpn_env"
-else
-echo
-echo "VPN credentials not set by user. Generating random PSK and password..."
-VPN_IPSEC_PSK="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
-VPN_USER=vpnuser
-VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
+  if [ -f "$vpn_env" ]; then
+    echo
+    echo "Retrieving previously generated VPN credentials..."
+    . "$vpn_env"
+  else
+    echo
+    echo "VPN credentials not set by user. Generating random PSK and password..."
+    VPN_IPSEC_PSK="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
+    VPN_USER=vpnuser
+    VPN_PASSWORD="$(LC_CTYPE=C tr -dc 'A-HJ-NPR-Za-km-z2-9' < /dev/urandom | head -c 16)"
 
-echo "VPN_IPSEC_PSK=$VPN_IPSEC_PSK" > "$vpn_env"
-echo "VPN_USER=$VPN_USER" >> "$vpn_env"
-echo "VPN_PASSWORD=$VPN_PASSWORD" >> "$vpn_env"
-chmod 600 "$vpn_env"
-fi
+    echo "VPN_IPSEC_PSK=$VPN_IPSEC_PSK" > "$vpn_env"
+    echo "VPN_USER=$VPN_USER" >> "$vpn_env"
+    echo "VPN_PASSWORD=$VPN_PASSWORD" >> "$vpn_env"
+    chmod 600 "$vpn_env"
+  fi
 fi
 
 # Remove whitespace and quotes around VPN variables, if any
@@ -74,17 +74,17 @@ VPN_PASSWORD="$(nospaces "$VPN_PASSWORD")"
 VPN_PASSWORD="$(noquotes "$VPN_PASSWORD")"
 
 if [ -z "$VPN_IPSEC_PSK" ] || [ -z "$VPN_USER" ] || [ -z "$VPN_PASSWORD" ]; then
-exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
+  exiterr "All VPN credentials must be specified. Edit your 'env' file and re-enter them."
 fi
 
 if printf %s "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" | LC_ALL=C grep -q '[^ -~]\+'; then
-exiterr "VPN credentials must not contain non-ASCII characters."
+  exiterr "VPN credentials must not contain non-ASCII characters."
 fi
 
 case "$VPN_IPSEC_PSK $VPN_USER $VPN_PASSWORD" in
-*[\\\"\']*)
-exiterr "VPN credentials must not contain the following characters: \\ \" '"
-;;
+  *[\\\"\']*)
+    exiterr "VPN credentials must not contain the following characters: \\ \" '"
+    ;;
 esac
 
 echo
@@ -114,52 +114,52 @@ cat > /etc/ipsec.conf <<EOF
 version 2.0
 
 config setup
-virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!$L2TP_NET,%v4:!$XAUTH_NET
-protostack=netkey
-nhelpers=0
-interfaces=%defaultroute
-uniqueids=no
+  virtual_private=%v4:10.0.0.0/8,%v4:192.168.0.0/16,%v4:172.16.0.0/12,%v4:!$L2TP_NET,%v4:!$XAUTH_NET
+  protostack=netkey
+  nhelpers=0
+  interfaces=%defaultroute
+  uniqueids=no
 
 conn shared
-left=%defaultroute
-leftid=$PUBLIC_IP
-right=%any
-encapsulation=yes
-authby=secret
-pfs=no
-rekey=no
-keyingtries=5
-dpddelay=30
-dpdtimeout=120
-dpdaction=clear
-ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024,aes256-sha2_512
-phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2,aes256-sha2_512
-sha2-truncbug=yes
+  left=%defaultroute
+  leftid=$PUBLIC_IP
+  right=%any
+  encapsulation=yes
+  authby=secret
+  pfs=no
+  rekey=no
+  keyingtries=5
+  dpddelay=30
+  dpdtimeout=120
+  dpdaction=clear
+  ike=3des-sha1,3des-sha2,aes-sha1,aes-sha1;modp1024,aes-sha2,aes-sha2;modp1024,aes256-sha2_512
+  phase2alg=3des-sha1,3des-sha2,aes-sha1,aes-sha2,aes256-sha2_512
+  sha2-truncbug=yes
 
 conn l2tp-psk
-auto=add
-leftprotoport=17/1701
-rightprotoport=17/%any
-type=transport
-phase2=esp
-also=shared
+  auto=add
+  leftprotoport=17/1701
+  rightprotoport=17/%any
+  type=transport
+  phase2=esp
+  also=shared
 
 conn xauth-psk
-auto=add
-leftsubnet=0.0.0.0/0
-rightaddresspool=$XAUTH_POOL
-modecfgdns1=$DNS_SRV1
-modecfgdns2=$DNS_SRV2
-leftxauthserver=yes
-rightxauthclient=yes
-leftmodecfgserver=yes
-rightmodecfgclient=yes
-modecfgpull=yes
-xauthby=file
-ike-frag=yes
-ikev2=never
-cisco-unity=yes
-also=shared
+  auto=add
+  leftsubnet=0.0.0.0/0
+  rightaddresspool=$XAUTH_POOL
+  modecfgdns1=$DNS_SRV1
+  modecfgdns2=$DNS_SRV2
+  leftxauthserver=yes
+  rightxauthclient=yes
+  leftmodecfgserver=yes
+  rightmodecfgclient=yes
+  modecfgpull=yes
+  xauthby=file
+  ike-frag=yes
+  ikev2=never
+  cisco-unity=yes
+  also=shared
 EOF
 
 # Specify IPsec PSK
