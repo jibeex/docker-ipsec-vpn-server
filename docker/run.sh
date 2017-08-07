@@ -199,7 +199,8 @@ lcp-echo-interval 30
 connect-delay 5000
 EOF
 
-# Create VPN credentials
+# Create VPN credentials if file isn't empty
+if [[ ! -s /etc/ppp/chap-secrets ]]; then
 cat > /etc/ppp/chap-secrets <<EOF
 # Secrets for authentication using CHAP
 # client  server  secret  IP addresses
@@ -210,6 +211,7 @@ VPN_PASSWORD_ENC=$(openssl passwd -1 "$VPN_PASSWORD")
 cat > /etc/ipsec.d/passwd <<EOF
 $VPN_USER:$VPN_PASSWORD_ENC:xauth-psk
 EOF
+fi
 
 # Update sysctl settings
 SYST='/sbin/sysctl -e -q -w'
