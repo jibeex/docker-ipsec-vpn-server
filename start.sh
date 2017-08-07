@@ -14,6 +14,7 @@ fi
 
 docker run \
     --name jibeex-ipsec-vpn-server \
+    --env-file ./vpn.env \
     -p 500:500/udp \
     -p 4500:4500/udp \
     -v /lib/modules:/lib/modules:ro \
