@@ -118,7 +118,7 @@ config setup
   protostack=netkey
   nhelpers=0
   interfaces=%defaultroute
-  uniqueids=yes
+  uniqueids=no
 
 conn shared
   left=%defaultroute
